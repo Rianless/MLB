@@ -289,7 +289,7 @@ function TodayTab({dark, D}) {
     return list.filter(g => {
       const awayLeague = getTeam(g.away.name).league;
       const homeLeague = getTeam(g.home.name).league;
-      const leagueOk = leagueFilter === "ALL" || awayLeague === leagueFilter || homeLeague === leagueFilter;
+      const leagueOk = leagueFilter === "ALL" || (awayLeague === leagueFilter && homeLeague === leagueFilter);
       const searchLower = search.toLowerCase();
       const searchOk = !search ||
         g.away.name.toLowerCase().includes(searchLower) ||
