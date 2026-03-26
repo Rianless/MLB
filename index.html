@@ -3,79 +3,69 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-  
   <link rel="icon" type="image/png" href="/mlb.png">
   <link rel="apple-touch-icon" href="/mlb.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MLB ⚾">
   <meta name="theme-color" content="#0A0E1A">
-
   <title>MLB 대시보드 ⚾</title>
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
-  
   <style>
-    /* 전체 공통 스타일 */
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#0A0E1A;color:#fff;font-family:"Inter", "Noto Sans KR", sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
-    
-    /* 애니메이션 설정 */
+    body{background:#0A0E1A;color:#fff;font-family:"Inter","Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
     @keyframes slideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
     @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-    
-    button{cursor:pointer;-webkit-appearance:none; border:none; outline:none;}
-    
-    /* 스크롤바 숨기기 */
-    ::-webkit-scrollbar { display: none; }
+    button{cursor:pointer;-webkit-appearance:none;border:none;outline:none;}
+    ::-webkit-scrollbar{display:none;}
+    input{outline:none;}
   </style>
 </head>
 <body>
 <div id="root"></div>
-
 <script type="text/babel">
 const {useState, useEffect, useRef} = React;
 
 const TEAMS = {
-  "Arizona Diamondbacks": {short:"ARI", emoji:"🐍", color:"#A71930"},
-  "Atlanta Braves":        {short:"ATL", emoji:"🪓", color:"#CE1141"},
-  "Baltimore Orioles":     {short:"BAL", emoji:"🐦", color:"#DF4601"},
-  "Boston Red Sox":        {short:"BOS", emoji:"🔴", color:"#BD3039"},
-  "Chicago Cubs":          {short:"CHC", emoji:"🐻", color:"#0E3386"},
-  "Chicago White Sox":     {short:"CWS", emoji:"⚫", color:"#27251F"},
-  "Cincinnati Reds":       {short:"CIN", emoji:"🔴", color:"#C6011F"},
-  "Cleveland Guardians":   {short:"CLE", emoji:"🔵", color:"#E31937"},
-  "Colorado Rockies":      {short:"COL", emoji:"💜", color:"#333366"},
-  "Detroit Tigers":        {short:"DET", emoji:"🐯", color:"#0C2340"},
-  "Houston Astros":        {short:"HOU", emoji:"⭐", color:"#002D62"},
-  "Kansas City Royals":    {short:"KC",  emoji:"💙", color:"#004687"},
-  "Los Angeles Angels":    {short:"LAA", emoji:"👼", color:"#BA0021"},
-  "Los Angeles Dodgers":   {short:"LAD", emoji:"💙", color:"#005A9C"},
-  "Miami Marlins":         {short:"MIA", emoji:"🐟", color:"#00A3E0"},
-  "Milwaukee Brewers":     {short:"MIL", emoji:"🍺", color:"#FFC52F"},
-  "Minnesota Twins":       {short:"MIN", emoji:"🔴", color:"#002B5C"},
-  "New York Mets":         {short:"NYM", emoji:"🔵", color:"#002D72"},
-  "New York Yankees":      {short:"NYY", emoji:"⚾", color:"#003087"},
-  "Oakland Athletics":     {short:"OAK", emoji:"🐘", color:"#003831"},
-  "Philadelphia Phillies": {short:"PHI", emoji:"🔔", color:"#E81828"},
-  "Pittsburgh Pirates":    {short:"PIT", emoji:"☠️", color:"#FDB827"},
-  "San Diego Padres":      {short:"SD",  emoji:"🤎", color:"#2F241D"},
-  "San Francisco Giants":  {short:"SF",  emoji:"🟠", color:"#FD5A1E"},
-  "Seattle Mariners":      {short:"SEA", emoji:"🧭", color:"#0C2C56"},
-  "St. Louis Cardinals":   {short:"STL", emoji:"🐦", color:"#C41E3A"},
-  "Tampa Bay Rays":        {short:"TB",  emoji:"💛", color:"#092C5C"},
-  "Texas Rangers":         {short:"TEX", emoji:"🤠", color:"#003278"},
-  "Toronto Blue Jays":     {short:"TOR", emoji:"🐦", color:"#134A8E"},
-  "Washington Nationals":  {short:"WSH", emoji:"🦅", color:"#AB0003"},
+  "Arizona Diamondbacks": {short:"ARI", emoji:"🐍", color:"#A71930", league:"NL"},
+  "Atlanta Braves":        {short:"ATL", emoji:"🪓", color:"#CE1141", league:"NL"},
+  "Baltimore Orioles":     {short:"BAL", emoji:"🐦", color:"#DF4601", league:"AL"},
+  "Boston Red Sox":        {short:"BOS", emoji:"🔴", color:"#BD3039", league:"AL"},
+  "Chicago Cubs":          {short:"CHC", emoji:"🐻", color:"#0E3386", league:"NL"},
+  "Chicago White Sox":     {short:"CWS", emoji:"⚫", color:"#27251F", league:"AL"},
+  "Cincinnati Reds":       {short:"CIN", emoji:"🔴", color:"#C6011F", league:"NL"},
+  "Cleveland Guardians":   {short:"CLE", emoji:"🔵", color:"#E31937", league:"AL"},
+  "Colorado Rockies":      {short:"COL", emoji:"💜", color:"#333366", league:"NL"},
+  "Detroit Tigers":        {short:"DET", emoji:"🐯", color:"#0C2340", league:"AL"},
+  "Houston Astros":        {short:"HOU", emoji:"⭐", color:"#002D62", league:"AL"},
+  "Kansas City Royals":    {short:"KC",  emoji:"💙", color:"#004687", league:"AL"},
+  "Los Angeles Angels":    {short:"LAA", emoji:"👼", color:"#BA0021", league:"AL"},
+  "Los Angeles Dodgers":   {short:"LAD", emoji:"💙", color:"#005A9C", league:"NL"},
+  "Miami Marlins":         {short:"MIA", emoji:"🐟", color:"#00A3E0", league:"NL"},
+  "Milwaukee Brewers":     {short:"MIL", emoji:"🍺", color:"#FFC52F", league:"NL"},
+  "Minnesota Twins":       {short:"MIN", emoji:"🔴", color:"#002B5C", league:"AL"},
+  "New York Mets":         {short:"NYM", emoji:"🔵", color:"#002D72", league:"NL"},
+  "New York Yankees":      {short:"NYY", emoji:"⚾", color:"#003087", league:"AL"},
+  "Oakland Athletics":     {short:"OAK", emoji:"🐘", color:"#003831", league:"AL"},
+  "Philadelphia Phillies": {short:"PHI", emoji:"🔔", color:"#E81828", league:"NL"},
+  "Pittsburgh Pirates":    {short:"PIT", emoji:"☠️", color:"#FDB827", league:"NL"},
+  "San Diego Padres":      {short:"SD",  emoji:"🤎", color:"#2F241D", league:"NL"},
+  "San Francisco Giants":  {short:"SF",  emoji:"🟠", color:"#FD5A1E", league:"NL"},
+  "Seattle Mariners":      {short:"SEA", emoji:"🧭", color:"#0C2C56", league:"AL"},
+  "St. Louis Cardinals":   {short:"STL", emoji:"🐦", color:"#C41E3A", league:"NL"},
+  "Tampa Bay Rays":        {short:"TB",  emoji:"💛", color:"#092C5C", league:"AL"},
+  "Texas Rangers":         {short:"TEX", emoji:"🤠", color:"#003278", league:"AL"},
+  "Toronto Blue Jays":     {short:"TOR", emoji:"🐦", color:"#134A8E", league:"AL"},
+  "Washington Nationals":  {short:"WSH", emoji:"🦅", color:"#AB0003", league:"NL"},
 };
 
 function getTeam(name) {
-  return TEAMS[name] || {short: name?.split(" ").pop() || "?", emoji:"⚾", color:"#888"};
+  return TEAMS[name] || {short: name?.split(" ").pop() || "?", emoji:"⚾", color:"#888", league:"?"};
 }
 
 function ScoreCard({game, dark, D, onClick}) {
@@ -84,7 +74,6 @@ function ScoreCard({game, dark, D, onClick}) {
   const isLive = game.status === "In Progress";
   const isFinal = game.status === "Final" || game.status === "Game Over";
   const isScheduled = !isLive && !isFinal;
-
   const gameTime = new Date(game.startTime).toLocaleTimeString("ko-KR", {
     hour:"2-digit", minute:"2-digit", timeZone:"Asia/Seoul"
   });
@@ -97,19 +86,19 @@ function ScoreCard({game, dark, D, onClick}) {
     }}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}}>
         <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
-          {isLive && <span style={{
-            fontSize:"10px",fontWeight:"800",color:"#fff",
-            background:"#E31837",borderRadius:"4px",padding:"2px 7px",
-          }}>● LIVE</span>}
+          {isLive && <span style={{fontSize:"10px",fontWeight:"800",color:"#fff",background:"#E31837",borderRadius:"4px",padding:"2px 7px"}}>● LIVE</span>}
           {isFinal && <span style={{fontSize:"10px",fontWeight:"700",color:D.textSub}}>FINAL</span>}
           {isScheduled && <span style={{fontSize:"11px",fontWeight:"700",color:"#FFB300"}}>{gameTime} KST</span>}
-          {isLive && <span style={{fontSize:"11px",color:"#FFB300",fontWeight:"700"}}>
-            {game.inningHalf==="Top"?"▲":"▼"}{game.inning}회
-          </span>}
+          {isLive && <span style={{fontSize:"11px",color:"#FFB300",fontWeight:"700"}}>{game.inningHalf==="Top"?"▲":"▼"}{game.inning}회</span>}
         </div>
-        <span style={{fontSize:"10px",color:D.textSub}}>{game.venue}</span>
+        <div style={{display:"flex",alignItems:"center",gap:"5px"}}>
+          <span style={{fontSize:"9px",fontWeight:"700",color:dark?"rgba(255,255,255,0.3)":"rgba(0,0,0,0.3)",
+            background:dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.06)",borderRadius:"3px",padding:"1px 5px"}}>
+            {away.league}
+          </span>
+          <span style={{fontSize:"10px",color:D.textSub}}>{game.venue}</span>
+        </div>
       </div>
-
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div style={{display:"flex",alignItems:"center",gap:"10px",flex:1}}>
           <span style={{fontSize:"28px"}}>{away.emoji}</span>
@@ -118,20 +107,16 @@ function ScoreCard({game, dark, D, onClick}) {
             <div style={{fontSize:"9px",color:D.textSub}}>{game.away.record}</div>
           </div>
         </div>
-
         <div style={{textAlign:"center",padding:"0 12px"}}>
           {isScheduled
             ? <span style={{fontSize:"18px",fontWeight:"900",color:D.textSub}}>VS</span>
             : <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-                <span style={{fontSize:"30px",fontWeight:"900",color:D.text,
-                  opacity:isFinal&&game.away.score>game.home.score?1:0.6}}>{game.away.score}</span>
+                <span style={{fontSize:"30px",fontWeight:"900",color:D.text,opacity:isFinal&&game.away.score>game.home.score?1:0.6}}>{game.away.score}</span>
                 <span style={{fontSize:"14px",color:D.textSub}}>:</span>
-                <span style={{fontSize:"30px",fontWeight:"900",color:D.text,
-                  opacity:isFinal&&game.home.score>game.away.score?1:0.6}}>{game.home.score}</span>
+                <span style={{fontSize:"30px",fontWeight:"900",color:D.text,opacity:isFinal&&game.home.score>game.away.score?1:0.6}}>{game.home.score}</span>
               </div>
           }
         </div>
-
         <div style={{display:"flex",alignItems:"center",gap:"10px",flex:1,flexDirection:"row-reverse"}}>
           <span style={{fontSize:"28px"}}>{home.emoji}</span>
           <div style={{textAlign:"right"}}>
@@ -151,53 +136,28 @@ function GameModal({game, dark, D, onClose}) {
   const isLive = game.status === "In Progress";
   const isFinal = game.status === "Final" || game.status === "Game Over";
   const isScheduled = !isLive && !isFinal;
-  const gameTime = new Date(game.startTime).toLocaleTimeString("ko-KR", {
-    hour:"2-digit", minute:"2-digit", timeZone:"Asia/Seoul"
-  });
-  const gameDate = new Date(game.startTime).toLocaleDateString("ko-KR", {
-    month:"long", day:"numeric", weekday:"short", timeZone:"Asia/Seoul"
-  });
-
+  const gameTime = new Date(game.startTime).toLocaleTimeString("ko-KR", {hour:"2-digit",minute:"2-digit",timeZone:"Asia/Seoul"});
+  const gameDate = new Date(game.startTime).toLocaleDateString("ko-KR", {month:"long",day:"numeric",weekday:"short",timeZone:"Asia/Seoul"});
   const handleClose = () => { setClosing(true); setTimeout(onClose, 280); };
-
-  const innings = Array(9).fill(null);
-  const as = game.awayInnings || innings;
-  const hs = game.homeInnings || innings;
+  const as = game.awayInnings || Array(9).fill(null);
+  const hs = game.homeInnings || Array(9).fill(null);
   const at = (game.awayInnings||[]).reduce((a,b)=>a+(b??0),0);
   const ht = (game.homeInnings||[]).reduce((a,b)=>a+(b??0),0);
 
   return (
-    <div style={{position:"fixed",inset:0,zIndex:100,
-      background:dark?"rgba(0,0,0,0.8)":"rgba(0,0,0,0.4)",
-      backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",
-      justifyContent:"center",animation:"fadeIn 0.2s"}} onClick={handleClose}>
-      <div style={{width:"100%",maxWidth:"520px",
-        background:dark?"#0F1525":"#ffffff",
-        border:`1px solid ${dark?"rgba(255,255,255,0.1)":"rgba(0,0,0,0.08)"}`,
-        borderRadius:"22px 22px 0 0",maxHeight:"92vh",overflowY:"auto",
-        animation:closing?"slideDown 0.28s ease forwards":"slideUp 0.3s ease",
-        paddingBottom:"28px"}} onClick={e=>e.stopPropagation()}>
-
+    <div style={{position:"fixed",inset:0,zIndex:100,background:dark?"rgba(0,0,0,0.8)":"rgba(0,0,0,0.4)",backdropFilter:"blur(6px)",display:"flex",alignItems:"flex-end",justifyContent:"center",animation:"fadeIn 0.2s"}} onClick={handleClose}>
+      <div style={{width:"100%",maxWidth:"520px",background:dark?"#0F1525":"#ffffff",border:`1px solid ${dark?"rgba(255,255,255,0.1)":"rgba(0,0,0,0.08)"}`,borderRadius:"22px 22px 0 0",maxHeight:"92vh",overflowY:"auto",animation:closing?"slideDown 0.28s ease forwards":"slideUp 0.3s ease",paddingBottom:"28px"}} onClick={e=>e.stopPropagation()}>
         <div style={{display:"flex",justifyContent:"center",padding:"10px 0 2px"}}>
-          <div style={{width:"34px",height:"4px",borderRadius:"2px",
-            background:dark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)"}}/>
+          <div style={{width:"34px",height:"4px",borderRadius:"2px",background:dark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)"}}/>
         </div>
-
         <div style={{padding:"10px 18px 14px",borderBottom:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"}`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}}>
             <div>
-              <span style={{fontSize:"11px",fontWeight:"700",color:"#FFB300"}}>
-                {gameDate} · {gameTime} KST
-              </span>
+              <span style={{fontSize:"11px",fontWeight:"700",color:"#FFB300"}}>{gameDate} · {gameTime} KST</span>
               <div style={{fontSize:"10px",color:D.textSub,marginTop:"2px"}}>📍 {game.venue}</div>
             </div>
-            <button onClick={handleClose} style={{
-              background:dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.06)",
-              color:dark?"rgba(255,255,255,0.6)":"rgba(0,0,0,0.5)",
-              borderRadius:"50%",width:"28px",height:"28px",fontSize:"16px",
-              display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+            <button onClick={handleClose} style={{background:dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.06)",color:dark?"rgba(255,255,255,0.6)":"rgba(0,0,0,0.5)",borderRadius:"50%",width:"28px",height:"28px",fontSize:"16px",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
           </div>
-
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div style={{display:"flex",alignItems:"center",gap:"10px",flex:1}}>
               <span style={{fontSize:"40px"}}>{away.emoji}</span>
@@ -216,9 +176,7 @@ function GameModal({game, dark, D, onClose}) {
                       <span style={{color:D.textSub}}>:</span>
                       <span style={{fontSize:"32px",fontWeight:"900",color:D.text}}>{game.home.score}</span>
                     </div>
-                    {isLive && <div style={{fontSize:"11px",color:"#FFB300",fontWeight:"700",textAlign:"center"}}>
-                      {game.inningHalf==="Top"?"▲":"▼"}{game.inning}회
-                    </div>}
+                    {isLive && <div style={{fontSize:"11px",color:"#FFB300",fontWeight:"700",textAlign:"center"}}>{game.inningHalf==="Top"?"▲":"▼"}{game.inning}회</div>}
                     {isFinal && <div style={{fontSize:"10px",color:D.textSub,textAlign:"center"}}>FINAL</div>}
                   </div>
               }
@@ -233,51 +191,39 @@ function GameModal({game, dark, D, onClose}) {
             </div>
           </div>
         </div>
-
         <div style={{padding:"18px 18px 0"}}>
           <div style={{marginBottom:"18px"}}>
             <div style={{display:"flex",alignItems:"center",gap:"6px",marginBottom:"10px"}}>
               <span style={{fontSize:"15px"}}>📊</span>
               <span style={{fontSize:"13px",fontWeight:"800"}}>이닝별 스코어</span>
             </div>
-            <div style={{background:dark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)",
-              border:`1px solid ${dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,
-              borderRadius:"12px",padding:"4px"}}>
+            <div style={{background:dark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)",border:`1px solid ${dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,borderRadius:"12px",padding:"4px"}}>
               {isScheduled
-                ? <div style={{textAlign:"center",padding:"16px",color:D.textSub,fontSize:"12px"}}>
-                    경기 예정 · 경기 후 스코어가 표시됩니다
-                  </div>
+                ? <div style={{textAlign:"center",padding:"16px",color:D.textSub,fontSize:"12px"}}>경기 예정 · 경기 후 스코어가 표시됩니다</div>
                 : <div style={{overflowX:"auto"}}>
                     <table style={{width:"100%",borderCollapse:"collapse",fontSize:"12px",minWidth:"320px"}}>
                       <thead>
                         <tr>
                           <td style={{padding:"6px",color:D.textSub,width:"55px"}}></td>
-                          {[1,2,3,4,5,6,7,8,9].map(i=>(
-                            <td key={i} style={{textAlign:"center",padding:"6px 3px",color:D.textSub,fontWeight:"700"}}>{i}</td>
-                          ))}
+                          {[1,2,3,4,5,6,7,8,9].map(i=><td key={i} style={{textAlign:"center",padding:"6px 3px",color:D.textSub,fontWeight:"700"}}>{i}</td>)}
                           <td style={{textAlign:"center",padding:"6px 5px",color:D.text,fontWeight:"900",fontSize:"13px"}}>R</td>
                         </tr>
                       </thead>
                       <tbody>
                         {[[game.away.name,as,at,away.color],[game.home.name,hs,ht,home.color]].map(([nm,sc,tot,cl],ri)=>(
                           <tr key={ri}>
-                            <td style={{padding:"8px 6px",fontSize:"11px",fontWeight:"700",color:D.textSub,
-                              borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>
+                            <td style={{padding:"8px 6px",fontSize:"11px",fontWeight:"700",color:D.textSub,borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>
                               <div style={{display:"flex",alignItems:"center",gap:"4px"}}>
                                 <div style={{width:"5px",height:"5px",borderRadius:"50%",background:cl}}/>
                                 {getTeam(nm).short}
                               </div>
                             </td>
                             {sc.map((s,i)=>(
-                              <td key={i} style={{textAlign:"center",padding:"8px 3px",
-                                color:s>0?D.text:D.textMuted,fontWeight:s>0?"700":"400",
-                                borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>
+                              <td key={i} style={{textAlign:"center",padding:"8px 3px",color:s>0?D.text:D.textMuted,fontWeight:s>0?"700":"400",borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>
                                 {s===null?<span style={{color:D.textMuted}}>-</span>:s}
                               </td>
                             ))}
-                            <td style={{textAlign:"center",padding:"8px 5px",fontWeight:"900",fontSize:"14px",
-                              color:tot===Math.max(at,ht)&&at!==ht?cl:D.text,
-                              borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>{tot}</td>
+                            <td style={{textAlign:"center",padding:"8px 5px",fontWeight:"900",fontSize:"14px",color:tot===Math.max(at,ht)&&at!==ht?cl:D.text,borderTop:`1px solid ${dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)"}`}}>{tot}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -286,7 +232,6 @@ function GameModal({game, dark, D, onClose}) {
               }
             </div>
           </div>
-
           {(game.away.pitcher || game.home.pitcher) && (
             <div>
               <div style={{display:"flex",alignItems:"center",gap:"6px",marginBottom:"10px"}}>
@@ -295,15 +240,9 @@ function GameModal({game, dark, D, onClose}) {
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
                 {[{t:game.away,info:away},{t:game.home,info:home}].map(({t,info},i)=>(
-                  <div key={i} style={{background:dark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.04)",
-                    border:`1px solid ${dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,
-                    borderRadius:"12px",padding:"12px"}}>
-                    <div style={{fontSize:"10px",color:D.textSub,marginBottom:"4px"}}>
-                      {i===0?"원정":"홈"} · {info.short}
-                    </div>
-                    <div style={{fontSize:"14px",fontWeight:"800",color:D.text}}>
-                      {t.pitcher || "미정"}
-                    </div>
+                  <div key={i} style={{background:dark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.04)",border:`1px solid ${dark?"rgba(255,255,255,0.08)":"rgba(0,0,0,0.08)"}`,borderRadius:"12px",padding:"12px"}}>
+                    <div style={{fontSize:"10px",color:D.textSub,marginBottom:"4px"}}>{i===0?"원정":"홈"} · {info.short}</div>
+                    <div style={{fontSize:"14px",fontWeight:"800",color:D.text}}>{t.pitcher || "미정"}</div>
                   </div>
                 ))}
               </div>
@@ -321,6 +260,8 @@ function TodayTab({dark, D}) {
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [selGame, setSelGame] = useState(null);
+  const [leagueFilter, setLeagueFilter] = useState("ALL");
+  const [search, setSearch] = useState("");
 
   const fetchGames = async () => {
     try {
@@ -343,22 +284,74 @@ function TodayTab({dark, D}) {
     return ()=>clearInterval(interval);
   },[]);
 
-  const liveGames      = games.filter(g=>g.status==="In Progress");
-  const finalGames     = games.filter(g=>g.status==="Final"||g.status==="Game Over");
-  const scheduledGames = games.filter(g=>g.status!=="In Progress"&&g.status!=="Final"&&g.status!=="Game Over");
+  // 필터링
+  const filterGames = (list) => {
+    return list.filter(g => {
+      const awayLeague = getTeam(g.away.name).league;
+      const homeLeague = getTeam(g.home.name).league;
+      const leagueOk = leagueFilter === "ALL" || awayLeague === leagueFilter || homeLeague === leagueFilter;
+      const searchLower = search.toLowerCase();
+      const searchOk = !search ||
+        g.away.name.toLowerCase().includes(searchLower) ||
+        g.home.name.toLowerCase().includes(searchLower) ||
+        getTeam(g.away.name).short.toLowerCase().includes(searchLower) ||
+        getTeam(g.home.name).short.toLowerCase().includes(searchLower);
+      return leagueOk && searchOk;
+    });
+  };
+
+  const liveGames      = filterGames(games.filter(g=>g.status==="In Progress"));
+  const finalGames     = filterGames(games.filter(g=>g.status==="Final"||g.status==="Game Over"));
+  const scheduledGames = filterGames(games.filter(g=>g.status!=="In Progress"&&g.status!=="Final"&&g.status!=="Game Over"));
+  const totalFiltered  = liveGames.length + finalGames.length + scheduledGames.length;
 
   return (
     <div style={{animation:"fadeIn 0.4s"}}>
       {selGame && <GameModal game={selGame} dark={dark} D={D} onClose={()=>setSelGame(null)}/>}
 
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
-        <div style={{fontSize:"11px",color:D.textSub}}>
-          {loading?"불러오는 중...":lastUpdate?`${lastUpdate.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})} 업데이트`:""}
+      {/* 상단 컨트롤 */}
+      <div style={{marginBottom:"14px"}}>
+        {/* AL/NL 필터 + 새로고침 */}
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
+          <div style={{display:"flex",gap:"6px"}}>
+            {["ALL","AL","NL"].map(l=>(
+              <button key={l} onClick={()=>setLeagueFilter(l)} style={{
+                padding:"5px 14px",
+                background:leagueFilter===l?"#E31837":"transparent",
+                border:`1px solid ${leagueFilter===l?"#E31837":D.cardBorder}`,
+                color:leagueFilter===l?"#fff":D.text,
+                borderRadius:"20px",fontSize:"12px",fontWeight:"700",
+                transition:"all 0.2s"
+              }}>{l}</button>
+            ))}
+          </div>
+          <button onClick={fetchGames} style={{background:"#E31837",color:"#fff",borderRadius:"8px",padding:"5px 12px",fontSize:"11px",fontWeight:"700"}}>🔄</button>
         </div>
-        <button onClick={fetchGames} style={{
-          background:"#E31837",color:"#fff",
-          borderRadius:"8px",padding:"5px 12px",fontSize:"11px",
-          fontWeight:"700"}}>🔄 새로고침</button>
+
+        {/* 검색창 */}
+        <div style={{position:"relative"}}>
+          <span style={{position:"absolute",left:"10px",top:"50%",transform:"translateY(-50%)",fontSize:"14px",color:D.textSub}}>🔍</span>
+          <input
+            type="text"
+            placeholder="팀명 검색 (예: Yankees, LAD...)"
+            value={search}
+            onChange={e=>setSearch(e.target.value)}
+            style={{
+              width:"100%",padding:"9px 12px 9px 32px",
+              background:D.card,border:`1px solid ${D.cardBorder}`,
+              borderRadius:"10px",fontSize:"13px",color:D.text,
+              fontFamily:"Inter, Noto Sans KR, sans-serif",
+            }}
+          />
+          {search && (
+            <button onClick={()=>setSearch("")} style={{position:"absolute",right:"10px",top:"50%",transform:"translateY(-50%)",background:"none",color:D.textSub,fontSize:"16px",padding:"0"}}>✕</button>
+          )}
+        </div>
+
+        {/* 업데이트 시간 */}
+        <div style={{fontSize:"10px",color:D.textSub,marginTop:"6px"}}>
+          {loading?"불러오는 중...":lastUpdate?`${lastUpdate.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})} 업데이트 · ${totalFiltered}경기`:""}
+        </div>
       </div>
 
       {loading && (
@@ -369,44 +362,33 @@ function TodayTab({dark, D}) {
       )}
 
       {error && (
-        <div style={{background:"rgba(227,24,55,0.1)",border:"1px solid rgba(227,24,55,0.3)",
-          borderRadius:"12px",padding:"16px",textAlign:"center",color:"#E31837"}}>
-          ❌ {error}
-          <br/>
-          <button onClick={fetchGames} style={{marginTop:"8px",background:"#E31837",color:"#fff",
-            borderRadius:"6px",padding:"4px 12px"}}>다시 시도</button>
+        <div style={{background:"rgba(227,24,55,0.1)",border:"1px solid rgba(227,24,55,0.3)",borderRadius:"12px",padding:"16px",textAlign:"center",color:"#E31837"}}>
+          ❌ {error}<br/>
+          <button onClick={fetchGames} style={{marginTop:"8px",background:"#E31837",color:"#fff",borderRadius:"6px",padding:"4px 12px"}}>다시 시도</button>
         </div>
       )}
 
-      {!loading && !error && games.length===0 && (
+      {!loading && !error && totalFiltered===0 && (
         <div style={{textAlign:"center",padding:"60px 0",color:D.textSub}}>
-          오늘 예정된 경기가 없어요 😴
+          {search ? `"${search}" 검색 결과가 없어요 😴` : "오늘 예정된 경기가 없어요 😴"}
         </div>
       )}
 
       {liveGames.length>0 && (
         <div style={{marginBottom:"20px"}}>
-          <div style={{fontSize:"11px",fontWeight:"700",color:"#E31837",letterSpacing:"0.1em",marginBottom:"8px"}}>
-            ● LIVE ({liveGames.length}경기)
-          </div>
+          <div style={{fontSize:"11px",fontWeight:"700",color:"#E31837",letterSpacing:"0.1em",marginBottom:"8px"}}>● LIVE ({liveGames.length}경기)</div>
           {liveGames.map(g=><ScoreCard key={g.id} game={g} dark={dark} D={D} onClick={()=>setSelGame(g)}/>)}
         </div>
       )}
-
       {scheduledGames.length>0 && (
         <div style={{marginBottom:"20px"}}>
-          <div style={{fontSize:"11px",fontWeight:"700",color:D.textSub,letterSpacing:"0.1em",marginBottom:"8px"}}>
-            예정 ({scheduledGames.length}경기)
-          </div>
+          <div style={{fontSize:"11px",fontWeight:"700",color:D.textSub,letterSpacing:"0.1em",marginBottom:"8px"}}>예정 ({scheduledGames.length}경기)</div>
           {scheduledGames.map(g=><ScoreCard key={g.id} game={g} dark={dark} D={D} onClick={()=>setSelGame(g)}/>)}
         </div>
       )}
-
       {finalGames.length>0 && (
         <div style={{marginBottom:"20px"}}>
-          <div style={{fontSize:"11px",fontWeight:"700",color:D.textSub,letterSpacing:"0.1em",marginBottom:"8px"}}>
-            종료 ({finalGames.length}경기)
-          </div>
+          <div style={{fontSize:"11px",fontWeight:"700",color:D.textSub,letterSpacing:"0.1em",marginBottom:"8px"}}>종료 ({finalGames.length}경기)</div>
           {finalGames.map(g=><ScoreCard key={g.id} game={g} dark={dark} D={D} onClick={()=>setSelGame(g)}/>)}
         </div>
       )}
@@ -419,32 +401,45 @@ function StandingsTab({dark, D}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [league, setLeague] = useState("AL");
+  const [search, setSearch] = useState("");
 
   useEffect(()=>{
     fetch("/api/mlbStandings")
       .then(r=>r.json())
-      .then(data=>{
-        if(data.error) throw new Error(data.error);
-        setStandings(data.standings||[]);
-      })
+      .then(data=>{ if(data.error) throw new Error(data.error); setStandings(data.standings||[]); })
       .catch(e=>setError(e.message))
       .finally(()=>setLoading(false));
   },[]);
 
-  const filtered = standings.filter(t=>t.league===league);
+  const filtered = standings
+    .filter(t=>t.league===league)
+    .filter(t=>!search || t.name.toLowerCase().includes(search.toLowerCase()) || getTeam(t.name).short.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div style={{animation:"fadeIn 0.4s"}}>
-      <div style={{display:"flex",gap:"8px",marginBottom:"14px"}}>
+      {/* AL/NL 필터 */}
+      <div style={{display:"flex",gap:"8px",marginBottom:"10px"}}>
         {["AL","NL"].map(l=>(
           <button key={l} onClick={()=>setLeague(l)} style={{
             padding:"6px 20px",background:league===l?"#E31837":"transparent",
             border:`1px solid ${league===l?"#E31837":D.cardBorder}`,
-            color:league===l?"#fff":D.text,borderRadius:"20px",
-            fontSize:"13px",fontWeight:"700"}}>
+            color:league===l?"#fff":D.text,borderRadius:"20px",fontSize:"13px",fontWeight:"700"}}>
             {l}
           </button>
         ))}
+      </div>
+
+      {/* 검색창 */}
+      <div style={{position:"relative",marginBottom:"12px"}}>
+        <span style={{position:"absolute",left:"10px",top:"50%",transform:"translateY(-50%)",fontSize:"14px",color:D.textSub}}>🔍</span>
+        <input
+          type="text"
+          placeholder="팀명 검색..."
+          value={search}
+          onChange={e=>setSearch(e.target.value)}
+          style={{width:"100%",padding:"9px 12px 9px 32px",background:D.card,border:`1px solid ${D.cardBorder}`,borderRadius:"10px",fontSize:"13px",color:D.text,fontFamily:"Inter, Noto Sans KR, sans-serif"}}
+        />
+        {search && <button onClick={()=>setSearch("")} style={{position:"absolute",right:"10px",top:"50%",transform:"translateY(-50%)",background:"none",color:D.textSub,fontSize:"16px",padding:"0"}}>✕</button>}
       </div>
 
       {loading && <div style={{textAlign:"center",padding:"40px",color:D.textSub}}>로딩 중...</div>}
@@ -452,28 +447,29 @@ function StandingsTab({dark, D}) {
 
       {!loading && !error && (
         <div style={{background:D.inputBg,border:`1px solid ${D.cardBorder}`,borderRadius:"14px",overflow:"hidden"}}>
-          <div style={{display:"grid",gridTemplateColumns:"32px 1fr 40px 40px 40px 50px",
-            padding:"9px 12px",borderBottom:`1px solid ${D.cardBorder}`,
-            fontSize:"9px",fontWeight:"700",letterSpacing:"0.1em",color:D.textSub,textTransform:"uppercase"}}>
-            <span>#</span><span>팀</span><span style={{textAlign:"center"}}>W</span>
-            <span style={{textAlign:"center"}}>L</span><span style={{textAlign:"center"}}>PCT</span>
+          <div style={{display:"grid",gridTemplateColumns:"32px 1fr 40px 40px 40px 50px",padding:"9px 12px",borderBottom:`1px solid ${D.cardBorder}`,fontSize:"9px",fontWeight:"700",letterSpacing:"0.1em",color:D.textSub,textTransform:"uppercase"}}>
+            <span>#</span><span>팀</span>
+            <span style={{textAlign:"center"}}>W</span>
+            <span style={{textAlign:"center"}}>L</span>
+            <span style={{textAlign:"center"}}>PCT</span>
             <span style={{textAlign:"center"}}>GB</span>
           </div>
-          {filtered.map((row,i)=>(
-            <div key={i} style={{display:"grid",gridTemplateColumns:"32px 1fr 40px 40px 40px 50px",
-              padding:"10px 12px",borderBottom:i<filtered.length-1?`1px solid ${D.cardBorder}`:"none",
-              alignItems:"center"}}>
-              <span style={{fontSize:"12px",fontWeight:"800",color:i===0?"#FFD700":i===1?"#C0C0C0":i===2?"#CD7F32":D.textSub}}>{i+1}</span>
-              <div style={{display:"flex",alignItems:"center",gap:"7px"}}>
-                <span style={{fontSize:"18px"}}>{getTeam(row.name).emoji}</span>
-                <span style={{fontSize:"12px",fontWeight:"700",color:D.text}}>{getTeam(row.name).short}</span>
-              </div>
-              <span style={{textAlign:"center",fontSize:"12px",fontWeight:"700",color:D.text}}>{row.wins}</span>
-              <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.losses}</span>
-              <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.pct}</span>
-              <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.gb}</span>
-            </div>
-          ))}
+          {filtered.length===0
+            ? <div style={{textAlign:"center",padding:"20px",color:D.textSub,fontSize:"13px"}}>검색 결과 없음</div>
+            : filtered.map((row,i)=>(
+                <div key={i} style={{display:"grid",gridTemplateColumns:"32px 1fr 40px 40px 40px 50px",padding:"10px 12px",borderBottom:i<filtered.length-1?`1px solid ${D.cardBorder}`:"none",alignItems:"center"}}>
+                  <span style={{fontSize:"12px",fontWeight:"800",color:i===0?"#FFD700":i===1?"#C0C0C0":i===2?"#CD7F32":D.textSub}}>{i+1}</span>
+                  <div style={{display:"flex",alignItems:"center",gap:"7px"}}>
+                    <span style={{fontSize:"18px"}}>{getTeam(row.name).emoji}</span>
+                    <span style={{fontSize:"12px",fontWeight:"700",color:D.text}}>{getTeam(row.name).short}</span>
+                  </div>
+                  <span style={{textAlign:"center",fontSize:"12px",fontWeight:"700",color:D.text}}>{row.wins}</span>
+                  <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.losses}</span>
+                  <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.pct}</span>
+                  <span style={{textAlign:"center",fontSize:"12px",color:D.textSub}}>{row.gb}</span>
+                </div>
+              ))
+          }
         </div>
       )}
     </div>
@@ -497,10 +493,7 @@ function App() {
     inputBg:"rgba(0,0,0,0.03)",
   };
 
-  useEffect(()=>{
-    const t = setInterval(()=>setTime(new Date()),1000);
-    return ()=>clearInterval(t);
-  },[]);
+  useEffect(()=>{ const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
   const TABS = [{id:"today",label:"오늘"},{id:"standings",label:"순위"}];
   const TAB_ORDER = ["today","standings"];
@@ -530,36 +523,24 @@ function App() {
               </div>
             </div>
             <div style={{textAlign:"right",display:"flex",flexDirection:"column",alignItems:"flex-end",gap:"4px"}}>
-              <div style={{fontSize:"15px",fontWeight:"700",color:D.text}}>
-                {time.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
-              </div>
+              <div style={{fontSize:"15px",fontWeight:"700",color:D.text}}>{time.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</div>
               <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
-                <div style={{fontSize:"10px",color:D.textSub}}>
-                  {time.toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"})}
-                </div>
-                <button onClick={()=>setDark(!dark)} style={{
-                  background:dark?"rgba(255,255,255,0.1)":"rgba(0,0,0,0.08)",
-                  borderRadius:"20px",padding:"3px 8px",fontSize:"13px"}}>{dark?"☀️":"🌙"}</button>
+                <div style={{fontSize:"10px",color:D.textSub}}>{time.toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"})}</div>
+                <button onClick={()=>setDark(!dark)} style={{background:dark?"rgba(255,255,255,0.1)":"rgba(0,0,0,0.08)",borderRadius:"20px",padding:"3px 8px",fontSize:"13px"}}>{dark?"☀️":"🌙"}</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
-        style={{maxWidth:"600px",margin:"0 auto",padding:"14px 16px 70px"}}>
-        {tab==="today"    && <TodayTab    dark={dark} D={D}/>}
-        {tab==="standings"&& <StandingsTab dark={dark} D={D}/>}
+      <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{maxWidth:"600px",margin:"0 auto",padding:"14px 16px 70px"}}>
+        {tab==="today"     && <TodayTab     dark={dark} D={D}/>}
+        {tab==="standings" && <StandingsTab dark={dark} D={D}/>}
       </div>
 
-      <div style={{position:"fixed",bottom:0,left:0,right:0,
-        background:D.navBg,borderTop:`1px solid ${D.navBorder}`,
-        display:"flex",paddingBottom:"6px",zIndex:50,transition:"background 0.3s"}}>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,background:D.navBg,borderTop:`1px solid ${D.navBorder}`,display:"flex",paddingBottom:"6px",zIndex:50,transition:"background 0.3s"}}>
         {TABS.map(t=>(
-          <button key={t.id} onClick={()=>setTab(t.id)} style={{
-            flex:1,padding:"4px 0",background:"transparent",
-            display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",
-            color:tab===t.id?"#E31837":D.navText,transition:"all 0.2s"}}>
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,padding:"4px 0",background:"transparent",display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",color:tab===t.id?"#E31837":D.navText,transition:"all 0.2s"}}>
             <span style={{fontSize:"18px"}}>{t.id==="today"?"📅":"🏆"}</span>
             <span style={{fontSize:"9px",fontWeight:tab===t.id?"700":"400"}}>{t.label}</span>
           </button>
@@ -573,3 +554,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
+
