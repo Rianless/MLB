@@ -1,0 +1,9 @@
+{
+
+]
+
+"rewrites": [
+
+{ "source": "/kbo", "destination": { "source": "/mlb", "destination":
+
+}
