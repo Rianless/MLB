@@ -1,7 +1,6 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/mlb/index.html" },
-    { "source": "/mlb", "destination": "/mlb/index.html" },
-    { "source": "/kbo", "destination": "/kbo/index.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/mlb", "destination": "/index.html" },
   ]
 }
