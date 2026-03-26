@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/mlb", "destination": "/mlb.html" },
-    { "source": "/api/mlbScores", "destination": "/api/mlbScores.js" }
+    { "source": "/kbo", "destination": "/kbo/index.html" },
+    { "source": "/mlb", "destination": "/mlb/index.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }
