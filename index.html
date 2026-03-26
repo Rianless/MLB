@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="MLB ⚾">
   
-  <meta id="theme-meta" name="theme-color" content="#0A0E1A">
+  <meta id="theme-meta" name="theme-color" content="#F0F2F5">
 
   <title>MLB 프로 대시보드 ⚾</title>
   
@@ -21,14 +21,15 @@
   
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#0A0E1A;color:#fff;font-family:"Inter", "Noto Sans KR", sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden; transition: background 0.3s;}
+    body{background:#F0F2F5;color:#1A1A1A;font-family:"Inter", "Noto Sans KR", sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden; transition: background 0.3s;}
     @keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
     @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     @keyframes slideDown{from{transform:translateY(0)}to{transform:translateY(100%)}}
     @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
     button{cursor:pointer;border:none;outline:none;transition:all 0.2s}
     button:active{transform:scale(0.95)}
-    input::placeholder{color:rgba(255,255,255,0.3)}
+    /* placeholder 색상 조정 */
+    input::placeholder{color:rgba(0,0,0,0.4)}
     ::-webkit-scrollbar { display: none; }
   </style>
 </head>
@@ -80,7 +81,6 @@ function getTeam(name) {
   return TEAMS[name] || {short: name?.split(" ").pop() || "?", emoji:"⚾", color:"#888"};
 }
 
-// 스코어 카드
 function ScoreCard({game, dark, D, onClick}) {
   const away = getTeam(game.away.name);
   const home = getTeam(game.home.name);
@@ -134,7 +134,6 @@ function ScoreCard({game, dark, D, onClick}) {
   );
 }
 
-// 상세 모달
 function GameModal({game, dark, D, onClose}) {
   const [closing, setClosing] = useState(false);
   const away = getTeam(game.away.name);
@@ -178,7 +177,6 @@ function GameModal({game, dark, D, onClose}) {
   );
 }
 
-// 오늘 탭
 function TodayTab({dark, D}) {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -188,7 +186,6 @@ function TodayTab({dark, D}) {
   const fetchGames = async () => {
     setLoading(true);
     try {
-      // API 엔드포인트가 없을 경우 대비하여 Mock 사용
       const r = await fetch("/api/mlbScores");
       const data = await r.json();
       setGames(data.games || MOCK_GAMES);
@@ -208,8 +205,19 @@ function TodayTab({dark, D}) {
     <div>
       {selGame && <GameModal game={selGame} dark={dark} D={D} onClose={()=>setSelGame(null)}/>}
       <div style={{marginBottom:"20px", position:"relative"}}>
+        {/* ✅ 검색바 글씨색 검정색 고정 및 가독성 개선 */}
         <input type="text" placeholder="팀 이름 검색 (예: Dodgers, LAD)" value={search} onChange={(e)=>setSearch(e.target.value)}
-            style={{width:"100%", padding:"12px 16px", borderRadius:"12px", background:D.inputBg, border:`1px solid ${D.cardBorder}`, color:D.text, fontSize:"14px", outline:"none"}}/>
+            style={{
+                width:"100%", 
+                padding:"12px 16px", 
+                borderRadius:"12px", 
+                background:D.inputBg, 
+                border:`1px solid ${D.cardBorder}`, 
+                color:"#1A1A1A", /* 라이트모드 기준 검은색 글씨 */
+                fontSize:"14px", 
+                outline:"none",
+                fontWeight:"500"
+            }}/>
         {search && <button onClick={()=>setSearch("")} style={{position:"absolute", right:"12px", top:"12px", background:"none", color:D.textSub}}>✕</button>}
       </div>
       {loading ? (
@@ -224,7 +232,6 @@ function TodayTab({dark, D}) {
   );
 }
 
-// 순위 탭
 function StandingsTab({dark, D}) {
   const [league, setLeague] = useState("AL");
   const [standings, setStandings] = useState([]);
@@ -264,7 +271,8 @@ function StandingsTab({dark, D}) {
 
 function App() {
   const [tab, setTab] = useState("today");
-  const [dark, setDark] = useState(true);
+  // ✅ 기본값을 false로 변경하여 라이트 모드가 기본이 되도록 수정
+  const [dark, setDark] = useState(false);
 
   const D = dark ? {
     bg:"#0A0E1A", card:"#161B2C", cardBorder:"rgba(255,255,255,0.05)",
@@ -278,15 +286,15 @@ function App() {
     inputBg:"rgba(0,0,0,0.05)",
   };
 
-  // ✅ 브라우저 상단바/하단바 색상 동적 업데이트 로직 추가됨
   useEffect(() => {
     const metaThemeColor = document.getElementById("theme-meta");
     if (metaThemeColor) {
       metaThemeColor.setAttribute("content", D.bg);
     }
-    // 스크롤 시 브라우저 바닥 색상을 맞추기 위해 body 배경색도 동기화
     document.body.style.backgroundColor = D.bg;
-  }, [dark, D.bg]);
+    // 텍스트 색상도 body에 적용하여 기본 가독성 확보
+    document.body.style.color = D.text;
+  }, [dark, D.bg, D.text]);
 
   return (
     <div style={{minHeight:"100vh", background:D.bg, color:D.text, transition:"background 0.3s, color 0.3s"}}>
