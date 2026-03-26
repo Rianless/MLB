@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MLB ⚾">
-  <meta name="theme-color" content="#0A0E1A">
+  <meta name="theme-color" content="#E8ECF1">
   <title>MLB 대시보드 ⚾</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#0A0E1A;color:#fff;font-family:"Inter","Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+    body{background:#E8ECF1;color:#0A0E1A;font-family:"Inter","Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
     @keyframes slideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
@@ -325,7 +325,7 @@ function TodayTab({dark, D}) {
               }}>{l}</button>
             ))}
           </div>
-          <button onClick={fetchGames} style={{background:"#E31837",color:"#fff",borderRadius:"8px",padding:"5px 12px",fontSize:"11px",fontWeight:"700"}}>🔄</button>
+          <button onClick={fetchGames} style={{background:"#E31837",color:"#fff",borderRadius:"8px",padding:"5px 12px",fontSize:"11px",fontWeight:"700"}}>새로고침</button>
         </div>
 
         {/* 검색창 */}
@@ -495,6 +495,11 @@ function App() {
 
   useEffect(()=>{ const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
+  useEffect(()=>{
+    document.body.style.background = dark ? "#0A0E1A" : "#E8ECF1";
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#0A0E1A" : "#E8ECF1");
+  },[dark]);
+
   const TABS = [{id:"today",label:"오늘"},{id:"standings",label:"순위"}];
   const TAB_ORDER = ["today","standings"];
   const touchStart = useRef(null);
@@ -554,4 +559,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
-
